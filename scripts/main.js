@@ -16,6 +16,15 @@ function keyPressed(e) {
         } else if (keyText === 'C') {
             screenContent = '';
             isResult = false;
+        } else if (keyText === '←') {
+            if (isNaN(current.at(-1))) {
+                screenContent = screenContent.trim().slice(0, -1).trim();
+            } else if (!isResult) {
+                screenContent = screenContent.slice(0, -1);
+            } else {
+                screenContent = '';
+                isResult = false;
+            }
         } else if (keyText === '=') {
             if (current.length === 1 || current.length % 2 === 0) {
                 return;
