@@ -8,7 +8,7 @@ const screen = document.querySelector('.screen');
 function keyPressed(e) {
     let keyText = e.target.textContent;
 
-    let current = screenContent.trim().split(' ').map(value => !isNaN(value) ? Number(value) : value);
+    let current = screenContent.trim().split(' ');
 
     if (isNaN(keyText)) {
         if (screenContent === '') {
@@ -21,15 +21,21 @@ function keyPressed(e) {
                 return;
             } else {
                 while (current.length > 1) {
-                    let operation = current.splice(0, 3);
+                    let operation = current.splice(0, 3).map(value => !isNaN(value) ? Number(value) : value);
 
                     let result = operate(...operation);
 
                     current.unshift(result);
                 }
 
-                screenContent = current[0].toString();
+                screenContent = (Math.round(current[0] * 100) / 100).toString();
                 isResult = true;
+            }
+        } else if (keyText === '.') {
+            if (isNaN(current.at(-1)) || current.at(-1).includes('.') || isResult) {
+                return;
+            } else {
+                screenContent += keyText;
             }
         } else {
             if (isNaN(current.at(-1))) {
@@ -71,7 +77,7 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
-    return b === 0 ? 'Mathematical Error!' : Math.round((a / b) * 100) / 100;
+    return b === 0 ? 'Mathematical Error!' : a / b;
 }
 
 // Execute operation from calculator
