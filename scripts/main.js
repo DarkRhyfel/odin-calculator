@@ -2,21 +2,28 @@
 let screenContent = '';
 let isResult = false;
 
+const allowedKeys = [8, 13, 27];
+const allowedRegex = /^[\d\.\-\/\*\+]/gm;
+
 const screen = document.querySelector('.screen');
 
 // Populate keys with functions
 function keyPressed(e) {
-    let keyText = e.target.textContent;
+    if (e.type === 'keyup' && e.key.match(allowedRegex) === null && !allowedKeys.includes(e.keyCode)) {
+        return;
+    }
+
+    let keyText = e.type === 'click' ? e.target.textContent : e.key;
 
     let current = screenContent.trim().split(' ');
 
     if (isNaN(keyText)) {
         if (screenContent === '') {
             return;
-        } else if (keyText === 'C') {
+        } else if (keyText === 'C' || keyText === 'Escape') {
             screenContent = '';
             isResult = false;
-        } else if (keyText === '←') {
+        } else if (keyText === '←' || keyText === 'Backspace') {
             if (isNaN(current.at(-1))) {
                 screenContent = screenContent.trim().slice(0, -1).trim();
             } else if (!isResult) {
@@ -25,7 +32,7 @@ function keyPressed(e) {
                 screenContent = '';
                 isResult = false;
             }
-        } else if (keyText === '=') {
+        } else if (keyText === '=' || keyText === 'Enter') {
             if (current.length === 1 || current.length % 2 === 0) {
                 return;
             } else {
@@ -47,6 +54,14 @@ function keyPressed(e) {
                 screenContent += keyText;
             }
         } else {
+            if (keyText === '/') {
+                keyText = '÷';
+            }
+
+            if (keyText === '*') {
+                keyText = '×';
+            }
+
             if (isNaN(current.at(-1))) {
                 screenContent = `${current.slice(0, -1).join(' ')} ${keyText} `;
             } else {
@@ -70,6 +85,8 @@ function keyPressed(e) {
 const keys = document.querySelectorAll('.key, .key-2, .key-3');
 
 keys.forEach(key => key.addEventListener('click', keyPressed));
+
+document.body.addEventListener('keyup', keyPressed);
 
 // Basic Math Functions
 
